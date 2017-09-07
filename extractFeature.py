@@ -51,13 +51,18 @@ def extractfeature(seg):
 
     return fa
 """
-提取
-
+提取特征并输出为文件
+每一个片段输出三个文件：
+    1. 特征数据 .json
+    2. 原始数据 .csv
+    3. 图(t-v, t-a) .png
+    
 Parameters
 ------------
 file: 文件路径
 sheet: 表单名
 sliceSize: 片段长度，单位：秒
+outdice: 输出文件的目录
 """
 def dealfeaturextra(file, sheet, sliceSize, outdict):
     df = pd.read_excel(file, index_col="时间", sheetname=sheet, parse_dates=True,)
