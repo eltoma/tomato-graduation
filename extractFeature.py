@@ -16,6 +16,7 @@ def touniformdata(df):
     # "quadratic" 二次插值，1S钟采样一次
     return df.resample('1S').asfreq().interpolate(method="quadratic")
 
+
 def extractfeature(seg):
     fa = {}
     # print(seg)
@@ -49,7 +50,12 @@ def extractfeature(seg):
     fa['Pd'] = dece.index.size / seg.index.size
     fa['Pc'] = constant.index.size / seg.index.size
 
+    fa['Dh'] = seg['高程'].tail(1).max() - seg['高程'].head(1).max()
+    fa['Dsoc'] = seg['SOC'].head(1).max() - seg['SOC'].tail(1).max()
+
     return fa
+
+
 """
 提取特征并输出为文件
 每一个片段输出三个文件：
@@ -65,7 +71,7 @@ sliceSize: 片段长度，单位：秒
 outdice: 输出文件的目录
 """
 def dealfeaturextra(file, sheet, sliceSize, outdict):
-    df = pd.read_excel(file, index_col="时间", sheetname=sheet, parse_dates=True,)
+    df = pd.read_excel(file, index_col="时间", sheetname=sheet, parse_dates=True)
     dfs = df.resample('1S').asfreq().interpolate()
     dfs['加速度'] = dfs['速度'].diff().fillna(0)
     filename = file.split("/").pop()
@@ -73,26 +79,35 @@ def dealfeaturextra(file, sheet, sliceSize, outdict):
     prefix = outdict + "/" + filename + " "
     plt.rcParams['font.family'] = 'SimHei'
 
+
+
     for i in range(0, dfs.index.size, sliceSize):
         # 切出片段
         seg = dfs[i: i + sliceSize]
 
         # 去掉最后一个不完整的片段
         if seg.index.size < sliceSize:
-            return
+            print("last slice don't have enough records, num is:", seg.index.size)
+            print("progress：", "%2.2f" % (i * 100 / dfs.index.size), "%")
+            continue
 
         # print("slice's offset is:", i)
         fa = extractfeature(seg)
-        json_fa = json.dumps(fa)
 
+        if fa['Dsoc'] <= 0:
+            print("this slice's Dsoc is dirty, Dsoc is:", fa['Dsoc'])
+            print("progress：", "%2.2f" % (i * 100 / dfs.index.size), "%")
+            continue
+
+        json_fa = json.dumps(fa)
         with open("%s%s至%s.%s" % (prefix, fa['start'], fa['end'], 'json'), 'w', encoding="utf-8") as f:
             f.write(json_fa)
 
         with open("%s%s至%s.%s" % (prefix, fa['start'], fa['end'], 'csv'), "w", encoding='gbk') as f:
             f.write(seg.to_csv())
 
-        plt.figure()
 
+        plt.figure()
 
         plt.subplot(2, 1, 1)
         plt.plot(seg.index, seg['速度'])
