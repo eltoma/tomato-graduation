@@ -40,6 +40,7 @@ def extractfeature(seg):
 
     fa['Aa'] = acc['加速度'].mean() if acc.index.size != 0 else 0
     fa['Ad'] = dece['加速度'].mean() if dece.index.size != 0 else 0
+    fa['Am'] = seg['加速度'].mean()
 
     fa['Vsd'] = seg['速度'].std()
 
