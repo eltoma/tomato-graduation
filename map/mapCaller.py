@@ -62,16 +62,22 @@ def analyseSteps(steps):
 # latitude：维度
 # googleMapKey：谷歌地图开发者密钥
 googleMapKey = "AIzaSyATW2zfFWbHLlRoNMYs7Sa33iRpyjZOjAU"
-locations = [116.481028,39.989643]
+locations = [116.481028,39.989643] # 这个locations格式好像有问题哦，
 def getAltitude(locations,googleMapKey):
+    # 需要代理，google的api被墙了
+    proxies = { 
+		"http": "http://127.0.0.1:1080",  
+		"https": "http://127.0.0.1:1080",  
+	}
+
     querystring = {
-        "key": googleMapKey,
-        "locations": locations
+        "locations":"39.7391536,-104.9847034",
+        "key":googleMapKey
     }
     url = "https://maps.googleapis.com/maps/api/elevation/json"
-    res = requests.get(url,params=querystring)
-    res.close()
-    print(res)
+    res = requests.get(url,params=querystring,proxies=proxies)
+   
+    print(res.text)
     # res = json.loads(response.text)
     # altitude = res
     # return altitude
