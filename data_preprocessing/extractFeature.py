@@ -36,7 +36,10 @@ def extractfeature(seg):
 
     fa['Pi'] = park.index.size / seg.index.size
 
-    fa['Vmr'] = unpark['速度'].mean()
+    if unpark.size == 0:
+        fa['Vmr'] = 0
+    else:
+        fa['Vmr'] = unpark['速度'].mean()
 
     fa['Aa'] = acc['加速度'].mean() if acc.index.size != 0 else 0
     fa['Ad'] = dece['加速度'].mean() if dece.index.size != 0 else 0
@@ -129,7 +132,7 @@ def dealfeaturextra(file, sheet, sliceSize, outdict):
         print("progress：", "%2.2f" % (i * 100 / dfs.index.size), "%")
 
 def main():
-    dealfeaturextra("./inputData/0613WL0035ttt.xlsx", "片段一", 120, outdict="./output")
+    dealfeaturextra("./0613WL0035.xlsx", "片段3", 120, outdict="./out")
     return 0
 
 if __name__ == "__main__":
