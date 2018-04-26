@@ -1,0 +1,41 @@
+.sidebar{
+  background-color: #4C4743;
+  padding: 0
+}
+.nav-sidebar > li > a{
+  color: #ACABA7;
+  font-size: 16px;
+}
+
+.nav-sidebar > li > a:hover,
+.nav-sidebar > li > a:active{
+  background-color: #433E39;
+}
+
+#header{
+  background-color: #FF5E3A;
+  text-align: center;
+  font-size: 18px;
+}
+
+#header a{
+  color: #fff;
+}
+
+#header a:hover{background-color: #FF5E3A;
+}
+
+.glyphicon{
+  margin-right: 10px;
+}
+
+.main{
+  background-color: #F1F1F1;
+}
+.navbar{background-color: #fff;}
+.col-sm-10{padding: 0;}
+.input-group{margin-bottom: 10px;}
+.btn-default{background-color: #FF5E3A;color: #fff}
+#record li a{font-size: 12px;}
+.navbar-right li a{color: #000}
+.navbar ul li a{color: #7A7A7A;}
