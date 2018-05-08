@@ -33,7 +33,7 @@
     <link rel="stylesheet" href="http://cache.amap.com/lbs/static/main1119.css"/>
     <style type="text/css">
         #panel {
-            position: fixed;
+            /* position: fixed; */
             background-color: white;
             max-height: 90%;
             overflow-y: auto;
@@ -163,8 +163,6 @@
             <div class="col-xs-9" style="height: 425px;margin-left:15px;border:1px solid #aaa;box-shadow: 1px 1px 1px #aaa;">
               <div id="container"></div>
               <div id="panel"></div>
-              
-             
             </div>
             <div class="col-xs-3" style="margin-left: -15px;padding-left:30px ">
               <div class="panel panel-default" >
@@ -254,6 +252,7 @@
     </div>
   </body>
   <script type="text/javascript">
+    $("#panel").hide();
     //基本地图加载
     var map = new AMap.Map("container", {
         resizeEnable: true,
@@ -275,18 +274,28 @@
       geocoder.getLocation(start, function(status, result) {
         if (status === 'complete' && result.info === 'OK') {
           console.log(result)
-          var startLoc = result.geocodes[0].location.getLng() + "," + result.geocodes[0].location.getLat()
+          var startLoc = [];
+          startLoc[0] = result.geocodes[0].location.getLng() 
+          startLoc[1] = result.geocodes[0].location.getLat()
           geocoder.getLocation(end, function(status, result) {
             if (status === 'complete' && result.info === 'OK') {
               console.log(result)
-              var endLoc = result.geocodes[0].location.getLng() + "," + result.geocodes[0].location.getLat()
+              var endLoc = [];
+              endLoc[0] = result.geocodes[0].location.getLng() 
+              endLoc[1] = result.geocodes[0].location.getLat()
             } else {
               console.log("终点坐标获取失败")
             }
+            console.log(startLoc, endLoc)
 
-            $.get("/calEnergy?" + "start=" + startLoc + "&" + "end=" + endLoc, function(res) {
-                console.log(res);
-            })
+            driving.search(new AMap.LngLat(startLoc[0], startLoc[1]), 
+                           new AMap.LngLat(endLoc[0], endLoc[1]));
+            $.get("/calEnergy?" + "start=" + startLoc.join(",") + 
+                              "&" + "end=" + endLoc.join(","), 
+                function(res) {
+                  console.log(res);
+                    
+                })
           });
         } else {
           console.log("起点坐标获取失败")
@@ -298,8 +307,6 @@
 
 
 
-    // 根据起终点经纬度规划驾车导航路线
-    // driving.search(new AMap.LngLat(106.463636,29.55864), new AMap.LngLat(106.308908,29.60735));
-    // $("#panel").hide();
+  
 </script>
 </html>
